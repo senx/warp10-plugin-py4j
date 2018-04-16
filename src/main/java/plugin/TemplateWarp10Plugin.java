@@ -14,7 +14,7 @@
 //   limitations under the License.
 //
 
-package io.warp10.plugins.template;
+package plugin;
 
 import java.util.Properties;
 
