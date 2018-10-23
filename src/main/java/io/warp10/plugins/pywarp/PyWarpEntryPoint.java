@@ -1,5 +1,5 @@
 //
-//   Copyright 2018  Cityzen Data
+//   Copyright 2018  SenX S.A.S.
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -14,14 +14,15 @@
 //   limitations under the License.
 //
 
-package plugin;
+package io.warp10.plugins.pywarp;
 
 import java.util.Properties;
 
-import io.warp10.warp.sdk.AbstractWarp10Plugin;
+import io.warp10.script.MemoryWarpScriptStack;
+import io.warp10.script.WarpScriptStack;
 
-public class TemplateWarp10Plugin extends AbstractWarp10Plugin {
-  @Override
-  public void init(Properties properties) {
+public class PyWarpEntryPoint {
+  public WarpScriptStack newStack() {
+    return new MemoryWarpScriptStack(PyWarpWarp10Plugin.getExposedStoreClient(), PyWarpWarp10Plugin.getExposedDirectoryClient(), new Properties());
   }
 }
