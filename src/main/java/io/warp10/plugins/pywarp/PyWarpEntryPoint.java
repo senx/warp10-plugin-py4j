@@ -30,7 +30,7 @@ public class PyWarpEntryPoint {
   }
   
   public WarpScriptStack newStack() {
-    MemoryWarpScriptStack stack = new MemoryWarpScriptStack(PyWarpWarp10Plugin.getExposedStoreClient(), PyWarpWarp10Plugin.getExposedDirectoryClient(), new Properties());
+    MemoryWarpScriptStack stack = new MemoryWarpScriptStack(PyWarpWarp10Plugin.getExposedStoreClient(), PyWarpWarp10Plugin.getExposedDirectoryClient());
     if (this.nolimits) {
       stack.maxLimits();
     }
