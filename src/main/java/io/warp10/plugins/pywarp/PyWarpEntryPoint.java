@@ -22,7 +22,18 @@ import io.warp10.script.MemoryWarpScriptStack;
 import io.warp10.script.WarpScriptStack;
 
 public class PyWarpEntryPoint {
+  
+  private final boolean nolimits;
+  
+  public PyWarpEntryPoint(boolean nolimits) {
+    this.nolimits = nolimits;
+  }
+  
   public WarpScriptStack newStack() {
-    return new MemoryWarpScriptStack(PyWarpWarp10Plugin.getExposedStoreClient(), PyWarpWarp10Plugin.getExposedDirectoryClient(), new Properties());
+    MemoryWarpScriptStack stack = new MemoryWarpScriptStack(PyWarpWarp10Plugin.getExposedStoreClient(), PyWarpWarp10Plugin.getExposedDirectoryClient(), new Properties());
+    if (this.nolimits) {
+      stack.maxLimits();
+    }
+    return stack;
   }
 }

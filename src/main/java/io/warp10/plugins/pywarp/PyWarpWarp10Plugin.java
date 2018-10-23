@@ -31,6 +31,7 @@ public class PyWarpWarp10Plugin extends AbstractWarp10Plugin {
   public static final String CONFIG_PYWARP_PORT = "pywarp.port";
   public static final String CONFIG_PYWARP_TIMEOUT_READ = "pywarp.timeout.read";
   public static final String CONFIG_PYWARP_TIMEOUT_CONNECT = "pywarp.timeout.connect";
+  public static final String CONFIG_PYWARP_STACK_NOLIMITS = "pywarp.stack.nolimits";
   
   @Override
   public void init(Properties props) {
@@ -39,12 +40,12 @@ public class PyWarpWarp10Plugin extends AbstractWarp10Plugin {
     int port = Integer.parseInt(props.getProperty(CONFIG_PYWARP_PORT, Integer.toString(GatewayServer.DEFAULT_PORT)));
     int readTimeout = Integer.parseInt(props.getProperty(CONFIG_PYWARP_TIMEOUT_READ, Integer.toString(GatewayServer.DEFAULT_READ_TIMEOUT)));
     int connectTimeout = Integer.parseInt(props.getProperty(CONFIG_PYWARP_TIMEOUT_CONNECT, Integer.toString(GatewayServer.DEFAULT_CONNECT_TIMEOUT)));
-    
+    boolean nolimits = "true".equals(props.getProperty(CONFIG_PYWARP_STACK_NOLIMITS));
     try {
       InetAddress addr = InetAddress.getByName(host);
       
       Py4JPythonClient cb = new CallbackClient(GatewayServer.DEFAULT_PYTHON_PORT);
-      GatewayServer gateway = new GatewayServer(new PyWarpEntryPoint(), port, addr, connectTimeout, readTimeout, null, cb);
+      GatewayServer gateway = new GatewayServer(new PyWarpEntryPoint(nolimits), port, addr, connectTimeout, readTimeout, null, cb);
       gateway.start();      
     } catch (UnknownHostException uhe) {
       throw new RuntimeException(uhe);
