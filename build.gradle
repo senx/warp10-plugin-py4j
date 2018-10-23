@@ -73,8 +73,8 @@ shadowJar {
   zip64 = true
   classifier = ''
   manifest {
-    attributes("Implementation-Title": "Warp 10 Template Plugin")
-    attributes("Implementation-Version": "0.0.1")
+    attributes("Implementation-Title": "@PLUGIN_DESCRIPTION@")
+    attributes("Implementation-Version": "@PLUGIN_VERSION@")
   }
   dependencies {
     exclude(dependency('io.warp10:warpscript:'))
