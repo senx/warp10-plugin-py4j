@@ -14,18 +14,18 @@
 //   limitations under the License.
 //
 
-package io.warp10.plugins.pywarp;
+package io.warp10.plugins.py4j;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
+import io.warp10.Py4JEntryPoint;
 import io.warp10.warp.sdk.AbstractWarp10Plugin;
-import py4j.CallbackClient;
 import py4j.GatewayServer;
 import py4j.Py4JPythonClient;
 
-public class PyWarpWarp10Plugin extends AbstractWarp10Plugin {
+public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
     
   public static final String CONFIG_PYWARP_HOST = "pywarp.host";
   public static final String CONFIG_PYWARP_PORT = "pywarp.port";
@@ -45,7 +45,6 @@ public class PyWarpWarp10Plugin extends AbstractWarp10Plugin {
     int readTimeout = Integer.parseInt(props.getProperty(CONFIG_PYWARP_TIMEOUT_READ, Integer.toString(GatewayServer.DEFAULT_READ_TIMEOUT)));
     int connectTimeout = Integer.parseInt(props.getProperty(CONFIG_PYWARP_TIMEOUT_CONNECT, Integer.toString(GatewayServer.DEFAULT_CONNECT_TIMEOUT)));
     int pyport = Integer.parseInt(props.getProperty(CONFIG_PYWARP_PYTHON_PORT, Integer.toString(GatewayServer.DEFAULT_PYTHON_PORT)));
-    boolean nolimits = "true".equals(props.getProperty(CONFIG_PYWARP_STACK_NOLIMITS));
 
     try {
       InetAddress addr = InetAddress.getByName(host);      
@@ -54,10 +53,10 @@ public class PyWarpWarp10Plugin extends AbstractWarp10Plugin {
       Py4JPythonClient cb = null; // new CallbackClient(pyport, pyaddr);
       
       //if (!"true".equals(props.getProperty(CONFIG_PYWARP_WARPSCRIPT_PYTHON))) {
-        cb = new PyWarpPythonClient();
+        cb = new io.warp10.plugins.py4j.Py4JPythonClient();
       //}
-      //GatewayServer gateway = new GatewayServer(new PyWarpEntryPoint(nolimits), port, addr, connectTimeout, readTimeout, null, cb);
-      GatewayServer gateway = new PyWarpGatewayServer(new PyWarpEntryPoint(nolimits), port, addr, connectTimeout, readTimeout, null, cb);
+      //GatewayServer gateway = new GatewayServer(new Py4JEntryPoint(), port, addr, connectTimeout, readTimeout, null, cb);
+      GatewayServer gateway = new Py4JGatewayServer(new Py4JEntryPoint(), port, addr, connectTimeout, readTimeout, null, cb);
       gateway.start();      
     } catch (UnknownHostException uhe) {
       throw new RuntimeException(uhe);

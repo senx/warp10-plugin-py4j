@@ -14,7 +14,7 @@
 //   limitations under the License.
 //
 
-package io.warp10.plugins.pywarp;
+package io.warp10.plugins.py4j;
 
 import java.net.InetAddress;
 import java.util.List;
@@ -23,9 +23,9 @@ import py4j.GatewayServer;
 import py4j.Py4JPythonClient;
 import py4j.commands.Command;
 
-public class PyWarpGatewayServer extends GatewayServer {
+public class Py4JGatewayServer extends GatewayServer {
   
-  public PyWarpGatewayServer(Object entrypoint, int port, InetAddress addr, int connectTimeout, int readTimeout,List<Class<? extends Command>> commands, Py4JPythonClient cb) {
+  public Py4JGatewayServer(Object entrypoint, int port, InetAddress addr, int connectTimeout, int readTimeout,List<Class<? extends Command>> commands, Py4JPythonClient cb) {
     super(entrypoint, port, addr, connectTimeout, readTimeout, commands, cb);
   }
   

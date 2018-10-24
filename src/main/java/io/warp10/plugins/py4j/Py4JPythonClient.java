@@ -14,16 +14,15 @@
 //   limitations under the License.
 //
 
-package io.warp10.plugins.pywarp;
+package io.warp10.plugins.py4j;
 
 import java.net.InetAddress;
 
 import py4j.Gateway;
-import py4j.Py4JPythonClient;
 
-public class PyWarpPythonClient implements Py4JPythonClient {
+public class Py4JPythonClient implements py4j.Py4JPythonClient {
   @Override
-  public Py4JPythonClient copyWith(InetAddress pythonAddress, int pythonPort) {
+  public py4j.Py4JPythonClient copyWith(InetAddress pythonAddress, int pythonPort) {
     return null;
   }
   @Override
