@@ -1,0 +1,13 @@
+{
+    "type": "plugin",
+    "group": "io.warp10",
+    "artifact": "warp10-plugin-py4j",
+    "version": "0.0.1",
+    "description": "Interact with Warp 10™ from Python",
+    "author": "SenX",
+    "email": "contact@senx.io",
+    "license": "Apache-2",
+    "git": "https://github.com/senx/warp10-plugin-py4j",
+    "tags": "warp 10, python",
+    "repoUrl": ""
+}
