@@ -1,0 +1,17 @@
+{
+  "type": "plugin",
+  "group": "io.warp10",
+  "artifact": "warp10-plugin-py4j",
+  "version": "1.0.0",
+  "description": "Py4J plugin",
+  "author": "Mathias Herberts",
+  "email": "mathias.herberts@senx.io",
+  "license": "Apache-2.0",
+  "git": "https://github.com/senx/warp10-plugin-py4j",
+  "repoUrl": "https://dl.bintray.com/senx/maven",
+  "tags": [
+    "python",
+    "java",
+    "py4j"
+  ]
+}
