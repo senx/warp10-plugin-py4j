@@ -8,7 +8,7 @@
   "email": "mathias.herberts@senx.io",
   "license": "Apache-2.0",
   "git": "https://github.com/senx/warp10-plugin-py4j",
-  "repoUrl": "https://dl.bintray.com/senx/maven",
+  "repoUrl": "https://repo.maven.apache.org/maven2",
   "tags": [
     "python",
     "java",
