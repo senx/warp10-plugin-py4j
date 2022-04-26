@@ -1,5 +1,5 @@
 //
-//   Copyright 2018  SenX S.A.S.
+//   Copyright 2018-22  SenX S.A.S.
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -21,26 +21,46 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 
 import javax.net.ServerSocketFactory;
+import javax.net.ssl.SSLServerSocketFactory;
 
 import io.warp10.Py4JEntryPoint;
+import io.warp10.WarpConfig;
+import io.warp10.continuum.Configuration;
+import io.warp10.sensision.jarjar.org.eclipse.jetty.util.ssl.SslContextFactory;
 import io.warp10.warp.sdk.AbstractWarp10Plugin;
 import py4j.GatewayServer;
 import py4j.Py4JGatewayServer;
-import py4j.GatewayServer.GatewayServerBuilder;
 import py4j.Py4JPythonClient;
 
 public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
-    
-  public static final String CONFIG_PY4J_HOST = "py4j.host";
-  public static final String CONFIG_PY4J_PORT = "py4j.port";
-  public static final String CONFIG_PY4J_AUTHTOKEN = "py4j.authtoken";
-  public static final String CONFIG_PY4J_PYTHON_PORT = "py4j.python.port";
-  public static final String CONFIG_PY4J_PYTHON_HOST = "py4j.python.host";
-  public static final String CONFIG_PY4J_TIMEOUT_READ = "py4j.timeout.read";
-  public static final String CONFIG_PY4J_TIMEOUT_CONNECT = "py4j.timeout.connect";
-  public static final String CONFIG_PY4J_STACK_NOLIMITS = "py4j.stack.nolimits";
-  public static final String CONFIG_PY4J_WARPSCRIPT_PYTHON = "py4j.warpscript.python";
-  
+
+  public static final String CONFIG_PY4J_PREFIX = "py4j";
+  public static final String CONFIG_PY4J_HOST = CONFIG_PY4J_PREFIX + ".host";
+  public static final String CONFIG_PY4J_PORT = CONFIG_PY4J_PREFIX + ".port";
+  public static final String CONFIG_PY4J_USE_SSL = CONFIG_PY4J_PREFIX + ".use.ssl";
+  public static final String CONFIG_PY4J_AUTHTOKEN = CONFIG_PY4J_PREFIX + ".authtoken";
+  public static final String CONFIG_PY4J_PYTHON_PORT = CONFIG_PY4J_PREFIX + ".python.port";
+  public static final String CONFIG_PY4J_PYTHON_HOST = CONFIG_PY4J_PREFIX + ".python.host";
+  public static final String CONFIG_PY4J_TIMEOUT_READ = CONFIG_PY4J_PREFIX + ".timeout.read";
+  public static final String CONFIG_PY4J_TIMEOUT_CONNECT = CONFIG_PY4J_PREFIX + ".timeout.connect";
+  public static final String CONFIG_PY4J_STACK_NOLIMITS = CONFIG_PY4J_PREFIX + ".stack.nolimits";
+  public static final String CONFIG_PY4J_WARPSCRIPT_PYTHON = CONFIG_PY4J_PREFIX + ".warpscript.python";
+
+  private SslContextFactory getSslContextFactory(String prefix) {
+    SslContextFactory sslContextFactory = new SslContextFactory();
+    sslContextFactory.setKeyStorePath(WarpConfig.getProperty(prefix + Configuration._SSL_KEYSTORE_PATH));
+    sslContextFactory.setCertAlias(WarpConfig.getProperty(prefix + Configuration._SSL_CERT_ALIAS));
+
+    if (null != WarpConfig.getProperty(prefix + Configuration._SSL_KEYSTORE_PASSWORD)) {
+      sslContextFactory.setKeyStorePassword(WarpConfig.getProperty(prefix + Configuration._SSL_KEYSTORE_PASSWORD));
+    }
+    if (null != WarpConfig.getProperty(prefix + Configuration._SSL_KEYMANAGER_PASSWORD)) {
+      sslContextFactory.setKeyManagerPassword(WarpConfig.getProperty(prefix + Configuration._SSL_KEYMANAGER_PASSWORD));
+    }
+
+    return sslContextFactory;
+  }
+
   @Override
   public void init(Properties props) {
     
@@ -50,8 +70,22 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
     int readTimeout = Integer.parseInt(props.getProperty(CONFIG_PY4J_TIMEOUT_READ, Integer.toString(GatewayServer.DEFAULT_READ_TIMEOUT)));
     int connectTimeout = Integer.parseInt(props.getProperty(CONFIG_PY4J_TIMEOUT_CONNECT, Integer.toString(GatewayServer.DEFAULT_CONNECT_TIMEOUT)));
     int pyport = Integer.parseInt(props.getProperty(CONFIG_PY4J_PYTHON_PORT, Integer.toString(GatewayServer.DEFAULT_PYTHON_PORT)));
+
     String authToken = props.getProperty(CONFIG_PY4J_AUTHTOKEN);
+
     try {
+
+      ServerSocketFactory ssf;
+      if ("true".equals(props.getProperty(CONFIG_PY4J_USE_SSL))) {
+        if (null == WarpConfig.getProperty(CONFIG_PY4J_PREFIX + Configuration._SSL_KEYSTORE_PATH) && null == WarpConfig.getProperty(CONFIG_PY4J_PREFIX + Configuration._SSL_CERT_ALIAS)) {
+          ssf = SSLServerSocketFactory.getDefault();
+        } else {
+          ssf = getSslContextFactory(CONFIG_PY4J_PREFIX).getSslContext().getServerSocketFactory();
+        }
+      } else {
+        ssf = ServerSocketFactory.getDefault();
+      }
+
       InetAddress addr = InetAddress.getByName(host);      
       InetAddress pyaddr = InetAddress.getByName(pyhost);
      
@@ -60,7 +94,7 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
       //if (!"true".equals(props.getProperty(CONFIG_PY4J_WARPSCRIPT_PYTHON))) {
         cb = new io.warp10.plugins.py4j.Py4JPythonClient();
       //}
-      GatewayServer gateway = new Py4JGatewayServer(new Py4JEntryPoint(), port, addr, connectTimeout, readTimeout, null, cb, ServerSocketFactory.getDefault(), authToken);
+      GatewayServer gateway = new Py4JGatewayServer(new Py4JEntryPoint(), port, addr, connectTimeout, readTimeout, null, cb, ssf, authToken);
       gateway.start();      
     } catch (UnknownHostException uhe) {
       throw new RuntimeException(uhe);
