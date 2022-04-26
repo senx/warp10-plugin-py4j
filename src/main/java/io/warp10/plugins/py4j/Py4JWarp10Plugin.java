@@ -24,7 +24,6 @@ import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLServerSocketFactory;
 
 import io.warp10.Py4JEntryPoint;
-import io.warp10.WarpConfig;
 import io.warp10.continuum.Configuration;
 import io.warp10.sensision.jarjar.org.eclipse.jetty.util.ssl.SslContextFactory;
 import io.warp10.warp.sdk.AbstractWarp10Plugin;
@@ -46,16 +45,16 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
   public static final String CONFIG_PY4J_STACK_NOLIMITS = CONFIG_PY4J_PREFIX + ".stack.nolimits";
   public static final String CONFIG_PY4J_WARPSCRIPT_PYTHON = CONFIG_PY4J_PREFIX + ".warpscript.python";
 
-  private SslContextFactory getSslContextFactory(String prefix) {
+  private SslContextFactory getSslContextFactory(Properties props, String prefix) {
     SslContextFactory sslContextFactory = new SslContextFactory();
-    sslContextFactory.setKeyStorePath(WarpConfig.getProperty(prefix + Configuration._SSL_KEYSTORE_PATH));
-    sslContextFactory.setCertAlias(WarpConfig.getProperty(prefix + Configuration._SSL_CERT_ALIAS));
+    sslContextFactory.setKeyStorePath(props.getProperty(prefix + Configuration._SSL_KEYSTORE_PATH));
+    sslContextFactory.setCertAlias(props.getProperty(prefix + Configuration._SSL_CERT_ALIAS));
 
-    if (null != WarpConfig.getProperty(prefix + Configuration._SSL_KEYSTORE_PASSWORD)) {
-      sslContextFactory.setKeyStorePassword(WarpConfig.getProperty(prefix + Configuration._SSL_KEYSTORE_PASSWORD));
+    if (null != props.getProperty(prefix + Configuration._SSL_KEYSTORE_PASSWORD)) {
+      sslContextFactory.setKeyStorePassword(props.getProperty(prefix + Configuration._SSL_KEYSTORE_PASSWORD));
     }
-    if (null != WarpConfig.getProperty(prefix + Configuration._SSL_KEYMANAGER_PASSWORD)) {
-      sslContextFactory.setKeyManagerPassword(WarpConfig.getProperty(prefix + Configuration._SSL_KEYMANAGER_PASSWORD));
+    if (null != props.getProperty(prefix + Configuration._SSL_KEYMANAGER_PASSWORD)) {
+      sslContextFactory.setKeyManagerPassword(props.getProperty(prefix + Configuration._SSL_KEYMANAGER_PASSWORD));
     }
 
     return sslContextFactory;
@@ -77,10 +76,10 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
 
       ServerSocketFactory ssf;
       if ("true".equals(props.getProperty(CONFIG_PY4J_USE_SSL))) {
-        if (null == WarpConfig.getProperty(CONFIG_PY4J_PREFIX + Configuration._SSL_KEYSTORE_PATH) && null == WarpConfig.getProperty(CONFIG_PY4J_PREFIX + Configuration._SSL_CERT_ALIAS)) {
+        if (null == props.getProperty(CONFIG_PY4J_PREFIX + Configuration._SSL_KEYSTORE_PATH) && null == props.getProperty(CONFIG_PY4J_PREFIX + Configuration._SSL_CERT_ALIAS)) {
           ssf = SSLServerSocketFactory.getDefault();
         } else {
-          ssf = getSslContextFactory(CONFIG_PY4J_PREFIX).getSslContext().getServerSocketFactory();
+          ssf = getSslContextFactory(props, CONFIG_PY4J_PREFIX).getSslContext().getServerSocketFactory();
         }
       } else {
         ssf = ServerSocketFactory.getDefault();
