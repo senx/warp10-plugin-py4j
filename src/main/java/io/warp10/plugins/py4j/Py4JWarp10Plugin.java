@@ -25,7 +25,7 @@ import javax.net.ssl.SSLServerSocketFactory;
 
 import io.warp10.Py4JEntryPoint;
 import io.warp10.continuum.Configuration;
-import io.warp10.sensision.jarjar.org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import io.warp10.warp.sdk.AbstractWarp10Plugin;
 import py4j.GatewayServer;
 import py4j.Py4JGatewayServer;
