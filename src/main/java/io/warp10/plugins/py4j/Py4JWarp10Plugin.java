@@ -37,12 +37,9 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
   public static final String CONFIG_PY4J_HOST = CONFIG_PY4J_PREFIX + ".host";
   public static final String CONFIG_PY4J_PORT = CONFIG_PY4J_PREFIX + ".port";
   public static final String CONFIG_PY4J_AUTHTOKEN = CONFIG_PY4J_PREFIX + ".authtoken";
-  public static final String CONFIG_PY4J_PYTHON_PORT = CONFIG_PY4J_PREFIX + ".python.port";
-  public static final String CONFIG_PY4J_PYTHON_HOST = CONFIG_PY4J_PREFIX + ".python.host";
   public static final String CONFIG_PY4J_TIMEOUT_READ = CONFIG_PY4J_PREFIX + ".timeout.read";
   public static final String CONFIG_PY4J_TIMEOUT_CONNECT = CONFIG_PY4J_PREFIX + ".timeout.connect";
   public static final String CONFIG_PY4J_STACK_NOLIMITS = CONFIG_PY4J_PREFIX + ".stack.nolimits";
-  public static final String CONFIG_PY4J_WARPSCRIPT_PYTHON = CONFIG_PY4J_PREFIX + ".warpscript.python";
 
   public static final String CONFIG_PY4J_USE_SSL = CONFIG_PY4J_PREFIX + ".use.ssl";
   public static final String CONFIG_PY4J_SSL_KEYSTORE_PATH = CONFIG_PY4J_PREFIX + Configuration._SSL_KEYSTORE_PATH;
@@ -69,11 +66,9 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
   public void init(Properties props) {
     
     String host = props.getProperty(CONFIG_PY4J_HOST, GatewayServer.DEFAULT_ADDRESS);
-    String pyhost = props.getProperty(CONFIG_PY4J_PYTHON_HOST, GatewayServer.DEFAULT_ADDRESS);
     int port = Integer.parseInt(props.getProperty(CONFIG_PY4J_PORT, Integer.toString(GatewayServer.DEFAULT_PORT)));
     int readTimeout = Integer.parseInt(props.getProperty(CONFIG_PY4J_TIMEOUT_READ, Integer.toString(GatewayServer.DEFAULT_READ_TIMEOUT)));
     int connectTimeout = Integer.parseInt(props.getProperty(CONFIG_PY4J_TIMEOUT_CONNECT, Integer.toString(GatewayServer.DEFAULT_CONNECT_TIMEOUT)));
-    int pyport = Integer.parseInt(props.getProperty(CONFIG_PY4J_PYTHON_PORT, Integer.toString(GatewayServer.DEFAULT_PYTHON_PORT)));
 
     String authToken = props.getProperty(CONFIG_PY4J_AUTHTOKEN);
 
@@ -90,14 +85,11 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
         ssf = ServerSocketFactory.getDefault();
       }
 
-      InetAddress addr = InetAddress.getByName(host);      
-      InetAddress pyaddr = InetAddress.getByName(pyhost);
-     
-      Py4JPythonClient cb = null; // new CallbackClient(pyport, pyaddr);
-      
-      //if (!"true".equals(props.getProperty(CONFIG_PY4J_WARPSCRIPT_PYTHON))) {
-        cb = new io.warp10.plugins.py4j.Py4JPythonClient();
-      //}
+      InetAddress addr = InetAddress.getByName(host);
+
+      // Callbacks are not supported
+      Py4JPythonClient cb = new io.warp10.plugins.py4j.Py4JPythonClient(); // new CallbackClient(pyport, pyaddr, CallbackClient.DEFAULT_MIN_CONNECTION_TIME, TimeUnit.SECONDS, sslContext.getSocketFactory());
+
       GatewayServer gateway = new Py4JGatewayServer(new Py4JEntryPoint(), port, addr, connectTimeout, readTimeout, null, cb, ssf, authToken);
       gateway.start();      
     } catch (UnknownHostException uhe) {
