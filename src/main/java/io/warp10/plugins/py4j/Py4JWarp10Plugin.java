@@ -17,11 +17,9 @@
 package io.warp10.plugins.py4j;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Properties;
 
 import javax.net.ServerSocketFactory;
-import javax.net.ssl.SSLServerSocketFactory;
 
 import io.warp10.Py4JEntryPoint;
 import io.warp10.continuum.Configuration;
@@ -40,24 +38,35 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
   public static final String CONFIG_PY4J_TIMEOUT_READ = CONFIG_PY4J_PREFIX + ".timeout.read";
   public static final String CONFIG_PY4J_TIMEOUT_CONNECT = CONFIG_PY4J_PREFIX + ".timeout.connect";
 
-  public static final String CONFIG_PY4J_USE_SSL = CONFIG_PY4J_PREFIX + ".use.ssl";
+  public static final String CONFIG_PY4J_USE_TLS = CONFIG_PY4J_PREFIX + ".use.tls";
   public static final String CONFIG_PY4J_SSL_KEYSTORE_PATH = CONFIG_PY4J_PREFIX + Configuration._SSL_KEYSTORE_PATH;
   public static final String CONFIG_PY4J_SSL_CERT_ALIAS = CONFIG_PY4J_PREFIX + Configuration._SSL_CERT_ALIAS;
   public static final String CONFIG_PY4J_SSL_KEYSTORE_PASSWORD = CONFIG_PY4J_PREFIX + Configuration._SSL_KEYSTORE_PASSWORD;
   public static final String CONFIG_PY4J_SSL_KEYMANAGER_PASSWORD = CONFIG_PY4J_PREFIX + Configuration._SSL_KEYMANAGER_PASSWORD;
 
-  private SslContextFactory getSslContextFactory(Properties props, String prefix) {
+  private SslContextFactory getSslContextFactory(Properties props, String prefix) throws Exception {
+    if (null == props.getProperty(CONFIG_PY4J_SSL_KEYSTORE_PATH)) {
+      throw new RuntimeException(CONFIG_PY4J_SSL_KEYSTORE_PATH + " is required but not set.");
+    }
+
+    if (null == props.getProperty(CONFIG_PY4J_SSL_CERT_ALIAS)) {
+      throw new RuntimeException(CONFIG_PY4J_SSL_CERT_ALIAS + " is required but not set.");
+    }
+
+    if (null == props.getProperty(CONFIG_PY4J_SSL_KEYSTORE_PASSWORD)) {
+      throw new RuntimeException(CONFIG_PY4J_SSL_KEYSTORE_PASSWORD + " is required but not set.");
+    }
+
     SslContextFactory sslContextFactory = new SslContextFactory();
     sslContextFactory.setKeyStorePath(props.getProperty(CONFIG_PY4J_SSL_KEYSTORE_PATH));
     sslContextFactory.setCertAlias(props.getProperty(CONFIG_PY4J_SSL_CERT_ALIAS));
+    sslContextFactory.setKeyStorePassword(props.getProperty(CONFIG_PY4J_SSL_KEYSTORE_PASSWORD));
 
-    if (null != props.getProperty(CONFIG_PY4J_SSL_KEYSTORE_PASSWORD)) {
-      sslContextFactory.setKeyStorePassword(CONFIG_PY4J_SSL_KEYSTORE_PASSWORD);
-    }
     if (null != props.getProperty(CONFIG_PY4J_SSL_KEYMANAGER_PASSWORD)) {
-      sslContextFactory.setKeyManagerPassword(CONFIG_PY4J_SSL_KEYMANAGER_PASSWORD);
+      sslContextFactory.setKeyManagerPassword(props.getProperty(CONFIG_PY4J_SSL_KEYMANAGER_PASSWORD));
     }
 
+    sslContextFactory.start();
     return sslContextFactory;
   }
 
@@ -74,12 +83,9 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
     try {
 
       ServerSocketFactory ssf;
-      if ("true".equals(props.getProperty(CONFIG_PY4J_USE_SSL))) {
-        if (null == props.getProperty(CONFIG_PY4J_SSL_KEYSTORE_PATH) && null == props.getProperty(CONFIG_PY4J_SSL_CERT_ALIAS)) {
-          ssf = SSLServerSocketFactory.getDefault();
-        } else {
-          ssf = getSslContextFactory(props, CONFIG_PY4J_PREFIX).getSslContext().getServerSocketFactory();
-        }
+      if ("true".equals(props.getProperty(CONFIG_PY4J_USE_TLS))) {
+        ssf = getSslContextFactory(props, CONFIG_PY4J_PREFIX).getSslContext().getServerSocketFactory();
+
       } else {
         ssf = ServerSocketFactory.getDefault();
       }
@@ -91,8 +97,8 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
 
       GatewayServer gateway = new Py4JGatewayServer(new Py4JEntryPoint(), port, addr, connectTimeout, readTimeout, null, cb, ssf, authToken);
       gateway.start();      
-    } catch (UnknownHostException uhe) {
-      throw new RuntimeException(uhe);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 }
