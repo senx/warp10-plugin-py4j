@@ -64,7 +64,3 @@ gateway = JavaGateway(gateway_parameters=params)
 # The communication is TLS encrypted
 ...
 ```
-
-
-
-
