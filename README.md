@@ -2,4 +2,39 @@
 
 This is a Warp 10 plugin that enables to use Python to interact with the platform.
 
-We made a a tutorial on how to use this plugin on our [blog](https://blog.senx.io/the-py4j-plugin-for-warp-10/).
+```python
+from py4j.java_gateway import JavaGateway
+from py4j.java_gateway import GatewayParameters
+
+params = GatewayParameters('127.0.0.1', 25333, auto_convert=True, auth_token="your-token")
+gateway = JavaGateway(gateway_parameters=params)
+stack = gateway.entry_point.newStack()
+stack.execMulti('"Hello Warp 10"')
+stack.pop()
+```
+
+More details [here](https://warp10.io/content/03_Documentation/04__Tooling/03_Python).
+We also made a tutorial on how to use this plugin on our [blog](https://blog.senx.io/the-py4j-plugin-for-warp-10/).
+
+Since revision 1.0.2 it is also possible to use TLS encryption.
+
+To use with ssl, you will need a key pair with certificate, for example, you can generate them with:
+
+`keytool -genkey -alias some-alias -keyalg RSA -storepass some-password -keystore path/to/keystore.jks`
+
+Then, set the configuration parameter as described in the template file `io.warp10-warp10-plugin-py4j.conf`.
+
+In python, you will then have to pass a `ssl.SSLContext` object to `GatewayParameters`:
+
+```python
+import ssl
+
+client_ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+client_ssl_context.check_hostname = False # you can set this to True if you load a complete certification chain
+client_ssl_context.verify_mode = ssl.CERT_NONE # we will trust the certificate sent by the gateway since we generated it
+params = GatewayParameters('127.0.0.1', 25333, auto_convert=True, ssl_context=client_ssl_context, auth_token="your-token")
+...
+```
+
+
+
