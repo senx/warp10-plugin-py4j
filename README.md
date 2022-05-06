@@ -57,10 +57,14 @@ import ssl
 
 client_ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
 client_ssl_context.check_hostname = False # you can set this to True if you load a complete certification chain
-client_ssl_context.verify_mode = ssl.CERT_NONE # here we trust the certificate sent by the gateway since we generated it
+client_ssl_context.verify_mode = ssl.CERT_NONE # here that says we trust the certificate sent by the gateway since we generated it
 params = GatewayParameters('localhost', 25333, auto_convert=True, auth_token="your-token", ssl_context=client_ssl_context)
+gateway = JavaGateway(gateway_parameters=params)
+
+# The communication is TLS encrypted
 ...
 ```
+
 
 
 
