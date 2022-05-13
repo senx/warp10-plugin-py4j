@@ -34,16 +34,16 @@ We also made a tutorial on how to use this plugin on our [blog](https://blog.sen
 
 ### SSL/TLS example
 
-Since revision 1.0.2 it is also possible to use TLS encryption.
+Since revision 1.0.2 it is also possible to use SSL/TLS encryption.
 
-To use with ssl, you will need a key pair with certificate, for example, you can generate them with:
+You will need a key pair with certificate, for example, you can generate them with:
 
 `keytool -genkey -alias some-alias -keyalg RSA -storepass some-password -keystore path/to/keystore.jks`
 
 Then, set these configuration parameters:
 
 ```
-py4j.use.tls = true
+py4j.use.ssl = true
 # In case previous configuration is true, the following must be set
 py4j.ssl.keystore.path = path/to/keystore.jks
 py4j.ssl.keystore.password = some-password
@@ -56,8 +56,8 @@ In python, you will then have to pass a `ssl.SSLContext` object to `GatewayParam
 import ssl
 
 client_ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-client_ssl_context.check_hostname = False # you can set this to True if you load a complete certification chain
-client_ssl_context.verify_mode = ssl.CERT_NONE # here that says we trust the certificate sent by the gateway since we generated it
+client_ssl_context.check_hostname = False # you can set this to True if the client loads a certification chain
+client_ssl_context.verify_mode = ssl.CERT_NONE # the client won't check the certification chain as we trust the server self-certificate since we generated it
 params = GatewayParameters('localhost', 25333, auto_convert=True, auth_token="your-token", ssl_context=client_ssl_context)
 gateway = JavaGateway(gateway_parameters=params)
 

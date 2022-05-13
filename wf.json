@@ -2,7 +2,7 @@
   "type": "plugin",
   "group": "io.warp10",
   "artifact": "warp10-plugin-py4j",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Py4J plugin",
   "author": "Mathias Herberts",
   "email": "mathias.herberts@senx.io",

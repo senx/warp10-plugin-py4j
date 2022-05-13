@@ -38,7 +38,7 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
   public static final String CONFIG_PY4J_TIMEOUT_READ = CONFIG_PY4J_PREFIX + ".timeout.read";
   public static final String CONFIG_PY4J_TIMEOUT_CONNECT = CONFIG_PY4J_PREFIX + ".timeout.connect";
 
-  public static final String CONFIG_PY4J_USE_TLS = CONFIG_PY4J_PREFIX + ".use.tls";
+  public static final String CONFIG_PY4J_USE_SSL = CONFIG_PY4J_PREFIX + ".use.ssl";
   public static final String CONFIG_PY4J_SSL_KEYSTORE_PATH = CONFIG_PY4J_PREFIX + Configuration._SSL_KEYSTORE_PATH;
   public static final String CONFIG_PY4J_SSL_CERT_ALIAS = CONFIG_PY4J_PREFIX + Configuration._SSL_CERT_ALIAS;
   public static final String CONFIG_PY4J_SSL_KEYSTORE_PASSWORD = CONFIG_PY4J_PREFIX + Configuration._SSL_KEYSTORE_PASSWORD;
@@ -83,7 +83,7 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
     try {
 
       ServerSocketFactory ssf;
-      if ("true".equals(props.getProperty(CONFIG_PY4J_USE_TLS))) {
+      if ("true".equals(props.getProperty(CONFIG_PY4J_USE_SSL))) {
         ssf = getSslContextFactory(props, CONFIG_PY4J_PREFIX).getSslContext().getServerSocketFactory();
 
       } else {
