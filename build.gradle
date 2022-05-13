@@ -48,7 +48,7 @@ configurations {
 // Dependencies of the project
 //
 dependencies {
-    compileOnly 'io.warp10:warpscript:2.8.+'
+    compileOnly 'io.warp10:warpscript:2.10.1'
 
     // The production code uses the SLF4J logging API at compile time
     compileOnly 'org.slf4j:slf4j-api:1.7.13'

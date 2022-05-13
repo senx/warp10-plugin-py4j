@@ -1,5 +1,5 @@
 //
-//   Copyright 2018-22  SenX S.A.S.
+//   Copyright 2018-2022  SenX S.A.S.
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
   public static final String CONFIG_PY4J_SSL_KEYSTORE_PASSWORD = CONFIG_PY4J_PREFIX + Configuration._SSL_KEYSTORE_PASSWORD;
   public static final String CONFIG_PY4J_SSL_KEYMANAGER_PASSWORD = CONFIG_PY4J_PREFIX + Configuration._SSL_KEYMANAGER_PASSWORD;
 
-  private SslContextFactory getSslContextFactory(Properties props, String prefix) throws Exception {
+  private SslContextFactory getSslContextFactory(Properties props) throws Exception {
     if (null == props.getProperty(CONFIG_PY4J_SSL_KEYSTORE_PATH)) {
       throw new RuntimeException(CONFIG_PY4J_SSL_KEYSTORE_PATH + " is required but not set.");
     }
@@ -84,7 +84,7 @@ public class Py4JWarp10Plugin extends AbstractWarp10Plugin {
 
       ServerSocketFactory ssf;
       if ("true".equals(props.getProperty(CONFIG_PY4J_USE_SSL))) {
-        ssf = getSslContextFactory(props, CONFIG_PY4J_PREFIX).getSslContext().getServerSocketFactory();
+        ssf = getSslContextFactory(props).getSslContext().getServerSocketFactory();
 
       } else {
         ssf = ServerSocketFactory.getDefault();

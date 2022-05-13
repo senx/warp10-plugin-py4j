@@ -6,13 +6,15 @@ You can get it with [Warpfleet](https://warpfleet.senx.io/browse/io.warp10/warp1
 
 Make sure to set these configurations:
 
-```
+```properties
 # register the plugin
 warp10.plugin.py4j = io.warp10.plugins.py4j.Py4JWarp10Plugin
 # register that there are dependencies to load if any
 plugin.defaultcl.io.warp10.plugins.py4j.Py4JWarp10Plugin = true
 # set to true to allow to find/fetch data through py4j
 egress.clients.expose = true
+# set a secret to use an authentication token (strongly advised)
+py4j.authtoken = your-token
 ```
 
 More details [here](https://warp10.io/content/03_Documentation/04__Tooling/03_Python).
@@ -27,7 +29,7 @@ params = GatewayParameters('127.0.0.1', 25333, auto_convert=True, auth_token="yo
 gateway = JavaGateway(gateway_parameters=params)
 stack = gateway.entry_point.newStack()
 stack.execMulti('"Hello Warp 10"')
-stack.pop()
+print(stack.pop())
 ```
 
 We also made a tutorial on how to use this plugin on our [blog](https://blog.senx.io/the-py4j-plugin-for-warp-10/).
@@ -42,7 +44,7 @@ You will need a key pair with certificate, for example, you can generate them wi
 
 Then, set these configuration parameters:
 
-```
+```properties
 py4j.use.ssl = true
 # In case previous configuration is true, the following must be set
 py4j.ssl.keystore.path = path/to/keystore.jks
