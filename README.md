@@ -23,7 +23,7 @@ More details [here](https://warp10.io/content/03_Documentation/04__Tooling/03_Py
 from py4j.java_gateway import JavaGateway
 from py4j.java_gateway import GatewayParameters
 
-params = GatewayParameters('localhost', 25333, auto_convert=True, auth_token="your-token")
+params = GatewayParameters('127.0.0.1', 25333, auto_convert=True, auth_token="your-token")
 gateway = JavaGateway(gateway_parameters=params)
 stack = gateway.entry_point.newStack()
 stack.execMulti('"Hello Warp 10"')
@@ -56,9 +56,9 @@ In python, you will then have to pass a `ssl.SSLContext` object to `GatewayParam
 import ssl
 
 client_ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-client_ssl_context.check_hostname = False # you can set this to True if the client loads a certification chain
+client_ssl_context.check_hostname = False # you can set this to True if the client loads a certification chain and you specify a hostname in GatewayParameters
 client_ssl_context.verify_mode = ssl.CERT_NONE # the client won't check the certification chain as we trust the server self-certificate since we generated it
-params = GatewayParameters('localhost', 25333, auto_convert=True, auth_token="your-token", ssl_context=client_ssl_context)
+params = GatewayParameters('127.0.0.1', 25333, auto_convert=True, auth_token="your-token", ssl_context=client_ssl_context)
 gateway = JavaGateway(gateway_parameters=params)
 
 # The communication is TLS encrypted
