@@ -1,5 +1,5 @@
 //
-//   Copyright 2019-2020  SenX S.A.S.
+//   Copyright 2019-2022  SenX S.A.S.
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -48,7 +48,8 @@ configurations {
 // Dependencies of the project
 //
 dependencies {
-  compileOnly 'io.warp10:warpscript:2.8.+'
+    compileOnly 'io.warp10:warpscript:2.10.1'
+
     // The production code uses the SLF4J logging API at compile time
     compileOnly 'org.slf4j:slf4j-api:1.7.13'
 
@@ -61,6 +62,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/net.sf.py4j/py4j
     implementation group: 'net.sf.py4j', name: 'py4j', version: '0.10.8.1'
+
+     //compile-only 'org.eclipse:org.eclipse.jetty'
+    compileOnly 'org.eclipse.jetty:jetty-server:9.4.2.v20170220'
 }
 
 sourceSets {
